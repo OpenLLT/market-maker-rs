@@ -51,6 +51,16 @@
 #![warn(clippy::all)]
 #![deny(unsafe_code)]
 
+// Re-export Decimal for use throughout the library
+pub use rust_decimal::Decimal;
+pub use rust_decimal_macros::dec;
+
+/// Market state module containing market data representations.
+pub mod market_state;
+
+/// Position tracking module for inventory and PnL management.
+pub mod position;
+
 /// Strategy module containing pure mathematical calculations for market making.
 ///
 /// This module implements the Avellaneda-Stoikov model calculations:
@@ -59,32 +69,8 @@
 /// - Bid/ask quote generation
 pub mod strategy;
 
-/// Position management module for tracking inventory and PnL.
-///
-/// This module handles:
-/// - Position updates on fills
-/// - Average entry price calculation
-/// - Realized and unrealized PnL tracking
-pub mod position;
-
-/// Market state module for representing observable market data.
-///
-/// This module provides:
-/// - Market state snapshots
-/// - Volatility estimation
-/// - Price tracking
-pub mod market_state;
-
-/// Common types and error definitions.
-///
-/// This module contains:
-/// - Shared data types
-/// - Error types using thiserror
-/// - Type aliases for domain concepts
+/// Common types and errors.
 pub mod types;
 
 /// Prelude module for convenient imports.
-///
-/// Re-exports the most commonly used types and traits.
-/// Users can import everything with `use market_maker_rs::prelude::*;`
 pub mod prelude;

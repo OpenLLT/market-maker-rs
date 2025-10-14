@@ -1,21 +1,23 @@
 //! Primitive type aliases for market making domain concepts.
 
-/// Price value in the market, represented as f64.
-pub type Price = f64;
+use rust_decimal::Decimal;
 
-/// Quantity or size of an order/position, represented as f64.
+/// Price value in the market, represented as Decimal.
+pub type Price = Decimal;
+
+/// Quantity or size of an order/position, represented as Decimal.
 ///
 /// Positive values indicate long positions, negative values indicate short positions.
-pub type Quantity = f64;
+pub type Quantity = Decimal;
 
-/// Timestamp in milliseconds since Unix epoch.
+/// Timestamp in nanoseconds since Unix epoch.
 pub type Timestamp = u64;
 
-/// Volatility value (annualized), represented as f64.
-pub type Volatility = f64;
+/// Volatility value (annualized), represented as Decimal.
+pub type Volatility = Decimal;
 
-/// Risk aversion parameter (gamma), represented as f64.
-pub type RiskAversion = f64;
+/// Risk aversion parameter (gamma), represented as Decimal.
+pub type RiskAversion = Decimal;
 
-/// Order intensity parameter (k), represented as f64.
-pub type OrderIntensity = f64;
+/// Order intensity parameter (k), represented as Decimal.
+pub type OrderIntensity = Decimal;

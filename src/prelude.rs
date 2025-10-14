@@ -7,6 +7,10 @@
 //! use market_maker_rs::prelude::*;
 //! ```
 
+// Re-export Decimal and helper functions
+pub use crate::types::decimal::{decimal_ln, decimal_powi, decimal_sqrt};
+pub use crate::{Decimal, dec};
+
 // Re-export types module
 pub use crate::types::error::{MMError, MMResult};
 pub use crate::types::primitives::{

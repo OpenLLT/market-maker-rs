@@ -8,5 +8,6 @@
 /// Error types for the market making library.
 pub mod error;
 
+pub mod decimal;
 /// Common type aliases for prices, quantities, and time.
 pub mod primitives;

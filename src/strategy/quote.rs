@@ -1,5 +1,7 @@
 //! Quote structure and generation logic.
 
+use crate::Decimal;
+
 #[cfg(feature = "serde")]
 use pretty_simple_display::{DebugPretty, DisplaySimple};
 
@@ -8,19 +10,22 @@ use pretty_simple_display::{DebugPretty, DisplaySimple};
 /// A quote contains the optimal bid and ask prices along with their sizes.
 #[derive(Clone, PartialEq)]
 #[cfg_attr(not(feature = "serde"), derive(Debug))]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize, DebugPretty, DisplaySimple))]
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Serialize, serde::Deserialize, DebugPretty, DisplaySimple)
+)]
 pub struct Quote {
     /// Bid price (price to buy at).
-    pub bid_price: f64,
+    pub bid_price: Decimal,
 
     /// Bid size (quantity to buy).
-    pub bid_size: f64,
+    pub bid_size: Decimal,
 
     /// Ask price (price to sell at).
-    pub ask_price: f64,
+    pub ask_price: Decimal,
 
     /// Ask size (quantity to sell).
-    pub ask_size: f64,
+    pub ask_size: Decimal,
 
     /// Timestamp when quote was generated, in milliseconds since Unix epoch.
     pub timestamp: u64,
@@ -29,61 +34,62 @@ pub struct Quote {
 impl Quote {
     /// Returns the spread (difference between ask and bid).
     #[must_use]
-    pub fn spread(&self) -> f64 {
+    pub fn spread(&self) -> Decimal {
         self.ask_price - self.bid_price
     }
 
     /// Returns the mid-price (average of bid and ask).
     #[must_use]
-    pub fn mid_price(&self) -> f64 {
-        (self.bid_price + self.ask_price) / 2.0
+    pub fn mid_price(&self) -> Decimal {
+        (self.bid_price + self.ask_price) / Decimal::from(2)
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::dec;
 
     #[test]
     fn test_quote_spread() {
         let quote = Quote {
-            bid_price: 100.0,
-            bid_size: 10.0,
-            ask_price: 101.0,
-            ask_size: 10.0,
+            bid_price: dec!(100.0),
+            bid_size: dec!(10.0),
+            ask_price: dec!(101.0),
+            ask_size: dec!(10.0),
             timestamp: 1000,
         };
 
-        assert_eq!(quote.spread(), 1.0);
+        assert_eq!(quote.spread(), dec!(1.0));
     }
 
     #[test]
     fn test_quote_mid_price() {
         let quote = Quote {
-            bid_price: 100.0,
-            bid_size: 10.0,
-            ask_price: 102.0,
-            ask_size: 10.0,
+            bid_price: dec!(100.0),
+            bid_size: dec!(10.0),
+            ask_price: dec!(102.0),
+            ask_size: dec!(10.0),
             timestamp: 1000,
         };
 
-        assert_eq!(quote.mid_price(), 101.0);
+        assert_eq!(quote.mid_price(), dec!(101.0));
     }
 
     #[test]
     fn test_quote_creation() {
         let quote = Quote {
-            bid_price: 99.5,
-            bid_size: 5.0,
-            ask_price: 100.5,
-            ask_size: 7.5,
+            bid_price: dec!(99.5),
+            bid_size: dec!(5.0),
+            ask_price: dec!(100.5),
+            ask_size: dec!(7.5),
             timestamp: 123456789,
         };
 
-        assert_eq!(quote.bid_price, 99.5);
-        assert_eq!(quote.bid_size, 5.0);
-        assert_eq!(quote.ask_price, 100.5);
-        assert_eq!(quote.ask_size, 7.5);
+        assert_eq!(quote.bid_price, dec!(99.5));
+        assert_eq!(quote.bid_size, dec!(5.0));
+        assert_eq!(quote.ask_price, dec!(100.5));
+        assert_eq!(quote.ask_size, dec!(7.5));
         assert_eq!(quote.timestamp, 123456789);
     }
 
@@ -91,10 +97,10 @@ mod tests {
     #[test]
     fn test_quote_display() {
         let quote = Quote {
-            bid_price: 100.0,
-            bid_size: 10.0,
-            ask_price: 101.0,
-            ask_size: 10.0,
+            bid_price: dec!(100.0),
+            bid_size: dec!(10.0),
+            ask_price: dec!(101.0),
+            ask_size: dec!(10.0),
             timestamp: 1000,
         };
 

@@ -13,10 +13,10 @@ fn main() {
 
     // Create a quote
     let quote = Quote {
-        bid_price: 100.0,
-        bid_size: 10.0,
-        ask_price: 101.0,
-        ask_size: 10.0,
+        bid_price: dec!(100.0),
+        bid_size: dec!(10.0),
+        ask_price: dec!(101.0),
+        ask_size: dec!(10.0),
         timestamp: 1234567890,
     };
 
@@ -26,7 +26,7 @@ fn main() {
     println!("{:?}\n", quote);
 
     // Create a strategy config
-    let config = StrategyConfig::new(0.5, 1.5, 3600000, 0.01).unwrap();
+    let config = StrategyConfig::new(dec!(0.5), dec!(1.5), 3600000, dec!(0.01)).unwrap();
     println!("Strategy Config Display (compact):");
     println!("{}", config);
     println!("\nStrategy Config Debug (pretty):");
@@ -34,8 +34,8 @@ fn main() {
 
     // Create an inventory position
     let position = InventoryPosition {
-        quantity: 100.0,
-        avg_entry_price: 99.5,
+        quantity: dec!(100.0),
+        avg_entry_price: dec!(99.5),
         last_update: 1234567890,
     };
 
@@ -46,9 +46,9 @@ fn main() {
 
     // Create PnL
     let pnl = PnL {
-        realized: 500.0,
-        unrealized: 150.0,
-        total: 650.0,
+        realized: dec!(500.0),
+        unrealized: dec!(150.0),
+        total: dec!(650.0),
     };
 
     println!("PnL Display (compact):");
@@ -57,7 +57,7 @@ fn main() {
     println!("{:?}\n", pnl);
 
     // Create market state
-    let market_state = MarketState::new(100.5, 0.25, 1234567890);
+    let market_state = MarketState::new(dec!(100.5), dec!(0.25), 1234567890);
     println!("Market State Display (compact):");
     println!("{}", market_state);
     println!("\nMarket State Debug (pretty):");
