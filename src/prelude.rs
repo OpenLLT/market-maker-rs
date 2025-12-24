@@ -32,3 +32,4 @@ pub use crate::market_state::snapshot::MarketState;
 pub use crate::risk::{
     CircuitBreaker, CircuitBreakerConfig, CircuitBreakerState, RiskLimits, TriggerReason,
 };
+pub use crate::risk::RiskLimits;

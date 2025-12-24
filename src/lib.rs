@@ -70,13 +70,12 @@ pub mod position;
 /// - Bid/ask quote generation
 pub mod strategy;
 
-/// Risk management module for position limits, exposure control, and circuit breakers.
+/// Risk management module for position limits and exposure control.
 ///
 /// This module provides tools for managing risk in market making operations:
 /// - Position limits (maximum inventory size)
 /// - Notional exposure limits (maximum value at risk)
 /// - Order scaling (automatic size reduction near limits)
-/// - Circuit breakers (automatic trading halts on adverse conditions)
 pub mod risk;
 
 /// Common types and errors.
