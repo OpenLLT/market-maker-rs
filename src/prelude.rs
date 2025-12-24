@@ -51,7 +51,6 @@ pub use crate::analytics::order_flow::{
 pub use crate::analytics::vpin::{
     BucketStats, TradeClassifier, VPINCalculator, VPINConfig, VolumeBucket,
 };
-// Note: Trade is already exported from strategy::adaptive_spread
 
 // Re-export execution types
 pub use crate::execution::{
@@ -60,4 +59,10 @@ pub use crate::execution::{
     MockExchangeConnector, OrderBookSnapshot, OrderId, OrderManager, OrderManagerConfig,
     OrderManagerStats, OrderRequest, OrderResponse, OrderStatus, OrderType, Side,
     ThreadSafeOrderManager, TimeInForce,
+};
+
+// Re-export backtest types
+pub use crate::backtest::{
+    BacktestConfig, BacktestEngine, BacktestResult, BacktestStrategy, HistoricalDataSource,
+    MarketTick, OHLCVBar, SimulatedFill, SlippageModel, VecDataSource,
 };

@@ -35,6 +35,7 @@
 //! - [`risk`]: Position limits, exposure control, and circuit breakers
 //! - [`analytics`]: Market data analysis and order flow metrics
 //! - [`execution`]: Exchange connectivity and order management
+//! - [`backtest`]: Backtesting engine for strategy validation
 //! - [`types`]: Common types and error definitions
 //! - [`prelude`]: Convenient re-exports of commonly used types
 //!
@@ -98,6 +99,15 @@ pub mod analytics;
 /// - Market data retrieval (order book snapshots)
 /// - Mock implementation for testing
 pub mod execution;
+
+/// Backtesting module for strategy validation on historical data.
+///
+/// This module provides an event-driven backtesting engine:
+/// - Historical data sources (ticks, OHLCV bars)
+/// - Strategy trait for integration
+/// - Fill simulation with slippage and fees
+/// - Performance metrics and equity curve tracking
+pub mod backtest;
 
 /// Prelude module for convenient imports.
 pub mod prelude;
