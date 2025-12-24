@@ -1,0 +1,47 @@
+//! Backtesting engine for strategy validation on historical data.
+//!
+//! This module provides an event-driven backtesting engine that simulates
+//! strategy execution on historical market data.
+//!
+//! # Overview
+//!
+//! The backtesting module includes:
+//!
+//! - **Data types**: `MarketTick`, `OHLCVBar` for market data
+//! - **Data sources**: `HistoricalDataSource` trait and `VecDataSource` implementation
+//! - **Strategy trait**: `BacktestStrategy` for strategy integration
+//! - **Engine**: `BacktestEngine` for running simulations
+//! - **Results**: `BacktestResult` with comprehensive metrics
+//!
+//! # Example
+//!
+//! ```rust
+//! use market_maker_rs::backtest::{
+//!     BacktestConfig, BacktestEngine, MarketTick, VecDataSource, SlippageModel
+//! };
+//! use market_maker_rs::dec;
+//!
+//! // Create sample market data
+//! let ticks = vec![
+//!     MarketTick::new(1000, dec!(100.0), dec!(1.0), dec!(100.1), dec!(1.0)),
+//!     MarketTick::new(1001, dec!(100.1), dec!(1.0), dec!(100.2), dec!(1.0)),
+//! ];
+//!
+//! let data_source = VecDataSource::new(ticks);
+//! let config = BacktestConfig::default();
+//!
+//! // In practice, you would implement BacktestStrategy for your strategy
+//! // let mut engine = BacktestEngine::new(config, strategy, data_source);
+//! // let result = engine.run();
+//! ```
+
+/// Data types for market data.
+pub mod data;
+
+/// Backtesting engine implementation.
+pub mod engine;
+
+pub use data::{HistoricalDataSource, MarketTick, OHLCVBar, VecDataSource};
+pub use engine::{
+    BacktestConfig, BacktestEngine, BacktestResult, BacktestStrategy, SimulatedFill, SlippageModel,
+};
