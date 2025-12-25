@@ -10,6 +10,7 @@
 //! - `vpin`: VPIN (Volume-Synchronized Probability of Informed Trading) calculation
 //! - `intensity`: Dynamic order intensity estimation for A-S model
 //! - `live_metrics`: Real-time operational metrics tracking
+//! - `prometheus_export`: Prometheus metrics export (feature: `prometheus`)
 //!
 //! # Example
 //!
@@ -36,6 +37,10 @@ pub mod intensity;
 /// Live metrics tracking for real-time monitoring.
 pub mod live_metrics;
 
+/// Prometheus metrics export (requires `prometheus` feature).
+#[cfg(feature = "prometheus")]
+pub mod prometheus_export;
+
 pub use intensity::{
     FillObservation, FillSide, IntensityEstimate, ObservationStats, OrderIntensityConfig,
     OrderIntensityEstimator,
@@ -44,4 +49,6 @@ pub use live_metrics::{Counter, Gauge, LiveMetrics, MetricsSnapshot, SharedLiveM
 pub use order_flow::{
     OrderFlowAnalyzer, OrderFlowAnalyzerBuilder, OrderFlowStats, Trade, TradeSide,
 };
+#[cfg(feature = "prometheus")]
+pub use prometheus_export::{MetricsBridge, MetricsServer, PrometheusMetrics};
 pub use vpin::{BucketStats, TradeClassifier, VPINCalculator, VPINConfig, VolumeBucket};

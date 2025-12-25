@@ -21,6 +21,7 @@ include = [
     "Makefile",
     "rust-toolchain.toml",
     "doc/**/*.md",
+    "doc/**/*.json",
 ]
 
 [lib]
@@ -36,6 +37,11 @@ serde_json = { version = "1.0", optional = true }
 pretty-simple-display = { version = "0.1.0", optional = true }
 async-trait = "0.1"
 orderbook-rs = "0.4"
+prometheus = { version = "0.13", optional = true }
+hyper = { version = "1.6", features = ["server", "http1"], optional = true }
+http-body-util = { version = "0.1", optional = true }
+hyper-util = { version = "0.1", features = ["tokio"], optional = true }
+tokio = { version = "1.47", features = ["rt-multi-thread", "net", "macros"], optional = true }
 
 [dev-dependencies]
 serde_json = "1.0"
@@ -44,3 +50,4 @@ tokio = { version = "1.47", features = ["macros", "rt", "time", "rt-multi-thread
 [features]
 default = []
 serde = ["dep:serde", "dep:serde_json", "dep:pretty-simple-display", "rust_decimal/serde"]
+prometheus = ["dep:prometheus", "dep:hyper", "dep:http-body-util", "dep:hyper-util", "dep:tokio"]
