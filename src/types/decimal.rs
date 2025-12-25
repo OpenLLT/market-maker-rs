@@ -253,4 +253,27 @@ mod tests {
         // Should handle error gracefully
         let _ = result;
     }
+
+    #[test]
+    fn test_decimal_ln_negative_value() {
+        // ln of negative value should produce NaN which fails conversion
+        let result = decimal_ln(dec!(-1.0));
+        // Result is NaN from f64, which fails Decimal::from_f64
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_decimal_sqrt_negative_value() {
+        // sqrt of negative value should produce NaN which fails conversion
+        let result = decimal_sqrt(dec!(-1.0));
+        // Result is NaN from f64, which fails Decimal::from_f64
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_decimal_ln_zero() {
+        // ln(0) = -infinity, which fails conversion
+        let result = decimal_ln(dec!(0.0));
+        assert!(result.is_err());
+    }
 }
