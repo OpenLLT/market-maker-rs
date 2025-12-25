@@ -13,12 +13,12 @@
 //!
 //! # Components
 //!
-//! - [`CalibrationConfig`]: Configuration for calibration process
-//! - [`CalibrationResult`]: Result with value, confidence interval, and quality
-//! - [`RiskAversionCalibrator`]: Calibrates γ from half-life or history
-//! - [`OrderIntensityCalibrator`]: Calibrates k from fill observations
-//! - [`VolatilityRegimeDetector`]: Detects and classifies volatility regimes
-//! - [`ParameterOptimizer`]: Combines all calibrators for full optimization
+//! - **CalibrationConfig**: Configuration for calibration process
+//! - **CalibrationResult**: Result with value, confidence interval, and quality
+//! - **RiskAversionCalibrator**: Calibrates γ from half-life or history
+//! - **OrderIntensityCalibrator**: Calibrates k from fill observations
+//! - **VolatilityRegimeDetector**: Detects and classifies volatility regimes
+//! - **ParameterOptimizer**: Combines all calibrators for full optimization
 //!
 //! # Example
 //!
