@@ -51,6 +51,8 @@ pub use crate::analytics::live_metrics::{
 pub use crate::analytics::order_flow::{
     OrderFlowAnalyzer, OrderFlowAnalyzerBuilder, OrderFlowStats, TradeSide,
 };
+#[cfg(feature = "prometheus")]
+pub use crate::analytics::prometheus_export::{MetricsBridge, MetricsServer, PrometheusMetrics};
 pub use crate::analytics::vpin::{
     BucketStats, TradeClassifier, VPINCalculator, VPINConfig, VolumeBucket,
 };
