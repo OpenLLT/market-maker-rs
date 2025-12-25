@@ -1261,29 +1261,38 @@ mod tests {
     // PerformanceMetrics tests
     #[test]
     fn test_performance_metrics_is_profitable() {
-        let mut metrics = PerformanceMetrics::default();
-        metrics.total_return = dec!(100.0);
+        let metrics = PerformanceMetrics {
+            total_return: dec!(100.0),
+            ..Default::default()
+        };
         assert!(metrics.is_profitable());
 
-        metrics.total_return = dec!(-100.0);
-        assert!(!metrics.is_profitable());
+        let metrics_loss = PerformanceMetrics {
+            total_return: dec!(-100.0),
+            ..Default::default()
+        };
+        assert!(!metrics_loss.is_profitable());
     }
 
     #[test]
     fn test_performance_metrics_risk_reward() {
-        let mut metrics = PerformanceMetrics::default();
-        metrics.average_winner = dec!(100.0);
-        metrics.average_loser = dec!(-50.0);
+        let metrics = PerformanceMetrics {
+            average_winner: dec!(100.0),
+            average_loser: dec!(-50.0),
+            ..Default::default()
+        };
 
         assert_eq!(metrics.risk_reward_ratio(), dec!(2.0));
     }
 
     #[test]
     fn test_performance_metrics_expectancy() {
-        let mut metrics = PerformanceMetrics::default();
-        metrics.win_rate = dec!(0.5);
-        metrics.average_winner = dec!(100.0);
-        metrics.average_loser = dec!(-50.0);
+        let metrics = PerformanceMetrics {
+            win_rate: dec!(0.5),
+            average_winner: dec!(100.0),
+            average_loser: dec!(-50.0),
+            ..Default::default()
+        };
 
         // Expectancy = 0.5 * 100 - 0.5 * 50 = 50 - 25 = 25
         assert_eq!(metrics.expectancy(), dec!(25.0));
