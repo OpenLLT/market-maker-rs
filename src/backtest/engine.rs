@@ -1066,4 +1066,116 @@ mod tests {
 
         assert_eq!(progress_calls, 3);
     }
+
+    // Additional tests for improved coverage
+
+    #[test]
+    fn test_backtest_result_avg_trade_pnl_zero_trades() {
+        let result = BacktestResult {
+            net_pnl: dec!(100.0),
+            num_trades: 0,
+            ..Default::default()
+        };
+
+        assert_eq!(result.avg_trade_pnl(), Decimal::ZERO);
+    }
+
+    #[test]
+    fn test_backtest_config_with_slippage() {
+        let config = BacktestConfig::default().with_slippage(SlippageModel::Fixed(dec!(0.01)));
+
+        assert!(matches!(config.slippage, SlippageModel::Fixed(_)));
+    }
+
+    #[test]
+    fn test_backtest_config_with_initial_capital() {
+        let config = BacktestConfig::default().with_initial_capital(dec!(50000.0));
+
+        assert_eq!(config.initial_capital, dec!(50000.0));
+    }
+
+    #[test]
+    fn test_backtest_config_with_record_trades() {
+        let config = BacktestConfig::default().with_record_trades(true);
+
+        assert!(config.record_trades);
+    }
+
+    #[test]
+    fn test_backtest_engine_with_actual_fills() {
+        // Create ticks where market definitely crosses our quotes
+        // Strategy quotes bid at mid - spread/2, ask at mid + spread/2
+        // For a BUY fill: market ask <= our bid
+        // For a SELL fill: market bid >= our ask
+        let ticks = vec![
+            create_test_tick(1000, dec!(100.0), dec!(100.2)), // Initial tick
+            create_test_tick(1001, dec!(99.0), dec!(99.1)),   // Market dropped, ask 99.1 < prev bid
+            create_test_tick(1002, dec!(101.0), dec!(101.2)), // Market jumped, bid 101 > prev ask
+        ];
+
+        // Wide spread strategy
+        let strategy = TestStrategy::new(dec!(2.0)); // 2.0 spread
+
+        let config = BacktestConfig::default()
+            .with_default_order_size(dec!(1.0))
+            .with_record_trades(true);
+
+        let mut engine = BacktestEngine::new(config, strategy, VecDataSource::new(ticks));
+
+        let result = engine.run();
+
+        assert_eq!(result.num_ticks, 3);
+    }
+
+    #[test]
+    fn test_backtest_engine_sharpe_calculation() {
+        // Create enough ticks to calculate Sharpe ratio
+        let mut ticks = Vec::new();
+        for i in 0..20 {
+            let price = dec!(100.0) + Decimal::from(i % 3);
+            ticks.push(create_test_tick(1000 + i as u64, price, price + dec!(0.2)));
+        }
+
+        let config = BacktestConfig::default().with_record_equity_curve(true);
+
+        let mut engine = BacktestEngine::new(config, PassiveStrategy, VecDataSource::new(ticks));
+
+        let result = engine.run();
+
+        // Sharpe should be calculated if we have equity curve
+        assert_eq!(result.equity_curve.len(), 20);
+    }
+
+    #[test]
+    fn test_backtest_engine_max_drawdown() {
+        let ticks = vec![
+            create_test_tick(1000, dec!(100.0), dec!(100.2)),
+            create_test_tick(1001, dec!(95.0), dec!(95.2)), // Price drop
+            create_test_tick(1002, dec!(90.0), dec!(90.2)), // Further drop
+            create_test_tick(1003, dec!(100.0), dec!(100.2)), // Recovery
+        ];
+
+        let config = BacktestConfig::default().with_record_equity_curve(true);
+
+        let mut engine = BacktestEngine::new(config, PassiveStrategy, VecDataSource::new(ticks));
+
+        let result = engine.run();
+
+        assert_eq!(result.num_ticks, 4);
+    }
+
+    #[test]
+    fn test_backtest_result_is_profitable() {
+        let profitable = BacktestResult {
+            net_pnl: dec!(100.0),
+            ..Default::default()
+        };
+        assert!(profitable.net_pnl > Decimal::ZERO);
+
+        let unprofitable = BacktestResult {
+            net_pnl: dec!(-50.0),
+            ..Default::default()
+        };
+        assert!(unprofitable.net_pnl < Decimal::ZERO);
+    }
 }

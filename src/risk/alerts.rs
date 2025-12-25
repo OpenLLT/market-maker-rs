@@ -1394,4 +1394,273 @@ mod tests {
 
         assert_eq!(count.load(Ordering::Relaxed), 2);
     }
+
+    // Additional tests for improved coverage
+
+    #[test]
+    fn test_alert_type_type_key_all_variants() {
+        // Test all AlertType variants for type_key()
+        assert_eq!(
+            AlertType::LargeLoss {
+                amount: dec!(100),
+                threshold: dec!(50)
+            }
+            .type_key(),
+            "large_loss"
+        );
+        assert_eq!(
+            AlertType::DailyLossLimit {
+                current: dec!(100),
+                limit: dec!(200),
+                pct: dec!(0.5)
+            }
+            .type_key(),
+            "daily_loss_limit"
+        );
+        assert_eq!(
+            AlertType::PositionLimit {
+                current: dec!(50),
+                limit: dec!(100),
+                pct: dec!(0.5)
+            }
+            .type_key(),
+            "position_limit"
+        );
+        assert_eq!(
+            AlertType::MaxDrawdown {
+                drawdown: dec!(0.1),
+                threshold: dec!(0.2)
+            }
+            .type_key(),
+            "max_drawdown"
+        );
+        assert_eq!(
+            AlertType::ConnectivityIssue {
+                exchange: "binance".to_string(),
+                error: "timeout".to_string()
+            }
+            .type_key(),
+            "connectivity_binance"
+        );
+        assert_eq!(
+            AlertType::HighLatency {
+                metric: "order".to_string(),
+                latency_ms: 500,
+                threshold_ms: 100
+            }
+            .type_key(),
+            "high_latency_order"
+        );
+        assert_eq!(
+            AlertType::StrategyError {
+                message: "error".to_string()
+            }
+            .type_key(),
+            "strategy_error"
+        );
+        assert_eq!(
+            AlertType::CircuitBreakerTriggered {
+                reason: "loss".to_string()
+            }
+            .type_key(),
+            "circuit_breaker"
+        );
+        assert_eq!(
+            AlertType::OrderRejected {
+                reason: "insufficient".to_string(),
+                order_details: "BUY 100".to_string()
+            }
+            .type_key(),
+            "order_rejected"
+        );
+        assert_eq!(
+            AlertType::MarketCondition {
+                condition: "volatile".to_string(),
+                details: "high vol".to_string()
+            }
+            .type_key(),
+            "market_volatile"
+        );
+        assert_eq!(
+            AlertType::Custom {
+                name: "test".to_string(),
+                message: "msg".to_string()
+            }
+            .type_key(),
+            "custom_test"
+        );
+    }
+
+    #[test]
+    fn test_alert_type_default_message_all_variants() {
+        // Test all AlertType variants for default_message()
+        let msg = AlertType::LargeLoss {
+            amount: dec!(100),
+            threshold: dec!(50),
+        }
+        .default_message();
+        assert!(msg.contains("Large loss"));
+
+        let msg = AlertType::DailyLossLimit {
+            current: dec!(100),
+            limit: dec!(200),
+            pct: dec!(0.5),
+        }
+        .default_message();
+        assert!(msg.contains("Daily loss limit"));
+
+        let msg = AlertType::PositionLimit {
+            current: dec!(50),
+            limit: dec!(100),
+            pct: dec!(0.5),
+        }
+        .default_message();
+        assert!(msg.contains("Position limit"));
+
+        let msg = AlertType::MaxDrawdown {
+            drawdown: dec!(0.1),
+            threshold: dec!(0.2),
+        }
+        .default_message();
+        assert!(msg.contains("Max drawdown"));
+
+        let msg = AlertType::ConnectivityIssue {
+            exchange: "binance".to_string(),
+            error: "timeout".to_string(),
+        }
+        .default_message();
+        assert!(msg.contains("Connectivity issue"));
+
+        let msg = AlertType::HighLatency {
+            metric: "order".to_string(),
+            latency_ms: 500,
+            threshold_ms: 100,
+        }
+        .default_message();
+        assert!(msg.contains("High latency"));
+
+        let msg = AlertType::StrategyError {
+            message: "error".to_string(),
+        }
+        .default_message();
+        assert!(msg.contains("Strategy error"));
+
+        let msg = AlertType::CircuitBreakerTriggered {
+            reason: "loss".to_string(),
+        }
+        .default_message();
+        assert!(msg.contains("Circuit breaker"));
+
+        let msg = AlertType::OrderRejected {
+            reason: "insufficient".to_string(),
+            order_details: "BUY 100".to_string(),
+        }
+        .default_message();
+        assert!(msg.contains("Order rejected"));
+
+        let msg = AlertType::MarketCondition {
+            condition: "volatile".to_string(),
+            details: "high vol".to_string(),
+        }
+        .default_message();
+        assert!(msg.contains("Market condition"));
+
+        let msg = AlertType::Custom {
+            name: "test".to_string(),
+            message: "custom msg".to_string(),
+        }
+        .default_message();
+        assert!(msg.contains("test"));
+    }
+
+    #[test]
+    fn test_alert_display() {
+        let alert = Alert::new(
+            AlertType::StrategyError {
+                message: "test".to_string(),
+            },
+            AlertSeverity::Error,
+            "Test message".to_string(),
+            1000,
+        );
+        let display = format!("{}", alert);
+        // Display format is "[severity] type_key - message"
+        assert!(display.contains("strategy_error"));
+        assert!(display.contains("Test message"));
+    }
+
+    #[test]
+    fn test_log_handler_all_severities() {
+        let handler = LogAlertHandler::all();
+
+        // Test that handler accepts all severities
+        assert!(handler.accepts_severity(AlertSeverity::Info));
+        assert!(handler.accepts_severity(AlertSeverity::Warning));
+        assert!(handler.accepts_severity(AlertSeverity::Error));
+        assert!(handler.accepts_severity(AlertSeverity::Critical));
+
+        // Test handle for each severity (just ensure no panic)
+        for severity in [
+            AlertSeverity::Info,
+            AlertSeverity::Warning,
+            AlertSeverity::Error,
+            AlertSeverity::Critical,
+        ] {
+            let alert = Alert::new(
+                AlertType::Custom {
+                    name: "test".to_string(),
+                    message: "msg".to_string(),
+                },
+                severity,
+                "Test".to_string(),
+                1000,
+            );
+            handler.handle(&alert);
+        }
+
+        assert_eq!(handler.name(), "LogAlertHandler");
+    }
+
+    #[test]
+    fn test_log_handler_default() {
+        let handler = LogAlertHandler::default();
+        assert!(handler.accepts_severity(AlertSeverity::Info));
+    }
+
+    #[test]
+    fn test_callback_handler_accepts_severity() {
+        let handler = CallbackAlertHandler::new(AlertSeverity::Warning, |_| {});
+
+        assert!(!handler.accepts_severity(AlertSeverity::Info));
+        assert!(handler.accepts_severity(AlertSeverity::Warning));
+        assert!(handler.accepts_severity(AlertSeverity::Error));
+        assert!(handler.accepts_severity(AlertSeverity::Critical));
+
+        assert_eq!(handler.name(), "CallbackAlertHandler");
+    }
+
+    #[test]
+    fn test_callback_handler_debug() {
+        let handler = CallbackAlertHandler::new(AlertSeverity::Info, |_| {});
+        let debug = format!("{:?}", handler);
+        assert!(debug.contains("CallbackAlertHandler"));
+    }
+
+    #[test]
+    fn test_collecting_handler_accepts_severity() {
+        let handler = CollectingAlertHandler::new(AlertSeverity::Error);
+
+        assert!(!handler.accepts_severity(AlertSeverity::Info));
+        assert!(!handler.accepts_severity(AlertSeverity::Warning));
+        assert!(handler.accepts_severity(AlertSeverity::Error));
+        assert!(handler.accepts_severity(AlertSeverity::Critical));
+
+        assert_eq!(handler.name(), "CollectingAlertHandler");
+    }
+
+    #[test]
+    fn test_manager_acknowledge_nonexistent() {
+        let mut manager = AlertManager::new(100, 0);
+        assert!(!manager.acknowledge("nonexistent_id"));
+    }
 }
